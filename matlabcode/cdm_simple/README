@@ -1,0 +1,9 @@
+cdm_sim is a simple version of Schneider's paper with the following changes
+1. Kernel definition KXX(i,j) = k(xi,xj')
+2. New modelling of source and target domains,
+ys = xs*w1;
+yt = xt*w1+xs*w1;
+
+ynew = ys + xs*w;
+
+do until w converges to w1

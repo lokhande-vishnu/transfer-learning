@@ -1,4 +1,5 @@
 % CDM as per the formulas by the book
+% normal gradient descent
 
 clear all;
 close all;
@@ -10,8 +11,8 @@ addpath('../libsvm-3.21/matlab');
 dataload;
 % wk = 357.23*ones(size(xtrain,2),1);
 % bk = zeros(size(xtrain,2),1)+123.45;
-xtest = sin(4*xtrain+5);
-ytest = ytrain;
+xtest = xtrain;
+ytest = sin(4*ytrain+5);
 
 rng(78);
 indices = randperm(size(xtest,1));
@@ -23,9 +24,9 @@ ytestU = ytest(indices(sz_h+1:end),:);
 
 %% Parameters
 c = 1;
-c2 = 100000; % sigma squared
+c2 = 10000; % sigma squared
 lam = 1;
-lamr = 0;
+lamr = 1;
 eta = 1;
 
 w = 1*ones(size(xtrain,2),1);
@@ -42,20 +43,23 @@ ytestU = mean_std(ytestU);
 %%
 p = 1;
 X = [xtrain;xtestL];    
-Y = [ytrain;ytestL];  
+Y = [ytrain;ytestL];
+ys(:,p) = Y;
 svm_model = svmtrain(Y,X,'-s 4');
-[~,Taccuracy(:,p),~] = svmpredict(Y, X, svm_model);
-[~,accuracy(:,p),~] = svmpredict(ytestU, xtestU, svm_model);
-while p < 10
+[Tpred(:,p),Taccuracy(:,p),~] = svmpredict(Y, X, svm_model);
+[pred(:,p),accuracy(:,p),~] = svmpredict(ytestU, xtestU, svm_model);
+while p < 100
     p = p + 1;
     ynew = ytrain.*(xtrain*w) + xtrain*b;
     
+    ynew = mean_std(ynew);
     X = [xtrain;xtestL];
     Y = [ynew;ytestL];
-    
+    ys(:,p) = Y;
+
     svm_model = svmtrain(Y,X,'-s 4');
-    [~,Taccuracy(:,p),~] = svmpredict(Y, X, svm_model);
-    [~,accuracy(:,p),~] = svmpredict(ytestU, xtestU, svm_model);
+    [Tpred(:,p),Taccuracy(:,p),~] = svmpredict(Y, X, svm_model);
+    [pred(:,p),accuracy(:,p),~] = svmpredict(ytestU, xtestU, svm_model);
     
     %%%% Updating w and b
     Ltr = kernel(xtrain,xtrain,c,c2);
@@ -103,11 +107,11 @@ while p < 10
 end
 figure(1);
 subplot(3,1,1);
-plot(L(1,2:end-5),'-*');
+plot(L(1,2:end),'-*');
 subplot(3,1,2);
-plot(Taccuracy(2,2:end-5),'-*');
+plot(Taccuracy(2,1:end),'-*');
 subplot(3,1,3);
-plot(accuracy(2,2:end-5),'-*');
+plot(accuracy(2,1:end),'-*');
 
 
 
