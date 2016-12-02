@@ -29,15 +29,15 @@ w = 1*ones(size(xtrain,2),1);
 store(:,1) = w;
 
 %% Mean-variance correction
-xtrain = mean_std(xtrain);
-ytrain = mean_std(ytrain);
-xtestL = mean_std(xtestL);
-xtestU = mean_std(xtestU);
-ytestL = mean_std(ytestL);
-ytestU = mean_std(ytestU);
+% xtrain = mean_std(xtrain);
+% ytrain = mean_std(ytrain);
+% xtestL = mean_std(xtestL);
+% xtestU = mean_std(xtestU);
+% ytestL = mean_std(ytestL);
+% ytestU = mean_std(ytestU);
 
-batch_tr = round(size(xtrain,1)/5);
-batch_te = round(size(xtestL,1)/5);
+batch_tr = round(size(xtrain,1)/20);
+batch_te = round(size(xtestL,1)/20);
 
 %%
 p = 1; s_iter =1;
@@ -47,7 +47,7 @@ ys(:,p) = Y;
 svm_model = svmtrain(Y,X,'-s 4');
 [Tpred(:,p),Taccuracy(:,p),~] = svmpredict(Y, X, svm_model);
 [pred(:,p),accuracy(:,p),~] = svmpredict(ytestU, xtestU, svm_model);
-while p < 100
+while p < 500
     p = p + 1;
     ynew = ytrain + xtrain*w;
     ynew = mean_std(ynew);
@@ -83,7 +83,9 @@ while p < 100
         % first expression
         for i = 1:size(ynews,1)
             for j = 1:size(ynews,1)
-                d_w(i,j) = (-1/c2)*(ynews(i) - ynews(j))*(I(i,k) - I(j,k));
+                %d_w(i,j) = (-1/c2)*(ynews(i) - ynews(j))*(I(i,k) - I(j,k));
+                % Changing I over here
+                d_w(i,j) = (-1/c2)*(ynews(i) - ynews(j))*(xtrain(i,k) - xtrain(j,k));
             end
         end
         dl_dk = Ltr2*Ltr'*Ltr2;
@@ -92,7 +94,9 @@ while p < 100
         % Second expression
         for i = 1:size(ynews,1)
             for j = 1:size(ytestLs,1)
-                ep_w(i,j) = (-1/c2)*(ynews(i) - ytestLs(j))*I(i,k);
+                % ep_w(i,j) = (-1/c2)*(ynews(i) - ytestLs(j))*I(i,k);
+                % Changing the I function
+                ep_w(i,j) = (-1/c2)*(ynews(i) - ytestLs(j))*xtrain(i,k);
             end
         end
         dl_dk2 = 2*Ltr2*Ltetr'*Lte2;

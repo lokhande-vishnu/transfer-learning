@@ -34,7 +34,7 @@ ytest = (xtest + xtrain)*w1;
 % xtrain = [-3:0.2:-1 -0.5:0.5:0 3:0.2:5]';
 % ytrain = sin(xtrain);
 % xtest = [-5:0.35:5]';
-% ytest = sin(xtest+1);
+% ytest = sin(xtest);
 
 % Paper dataset 2
 % Parameters
@@ -46,7 +46,7 @@ ytest = (xtest + xtrain)*w1;
 
 %% Simple dataset
 % xtrain = [-3:0.2:-1 -0.5:0.5:0 3:0.2:6]';
-% w1 = 13;
+% w1 = 0.13;
 % ytrain = xtrain*w1;
 % xtest = [-5:0.35:5]';
 % ytest = (xtest + xtrain)*w1;
