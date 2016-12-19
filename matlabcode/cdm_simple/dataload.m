@@ -13,15 +13,30 @@
 
 % housing
 % https://archive.ics.uci.edu/ml/machine-learning-databases/housing/
+% load('../housing.mat');
+% indices = randperm(size(housing,1));
+% len = round(size(housing,1)/2);
+% xtrain = housing(indices(1:len),1:end-1);
+% xtrain = mean_std(xtrain);
+% w1 = 0.13*ones(size(xtrain,2),1);
+% ytrain = xtrain*w1;
+% xtest = housing(indices(len+1:end),1:end-1);
+% xtest = mean_std(xtest);
+% ytest = (xtest + xtrain)*w1;
+
 load('../housing.mat');
+indices = randperm(size(housing,1));
 len = round(size(housing,1)/2);
-xtrain = housing(1:len,1:end-1);
+xtrain = housing(indices(1:len),1:end-1);
 xtrain = mean_std(xtrain);
-w1 = 0.13*ones(size(xtrain,2),1);
-ytrain = xtrain*w1;
-xtest = housing(len+1:end,1:end-1);
+xtest = housing(indices(len+1:end),1:end-1);
 xtest = mean_std(xtest);
-ytest = (xtest + xtrain)*w1;
+
+w1 = 0.13*ones(size(xtest,2),1);
+ytest = xtest*w1;
+w2 = 0.7*ones(size(xtest,2),1);
+    
+
 
 % % parameters
 % c = 0.001;
